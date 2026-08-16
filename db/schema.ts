@@ -5,6 +5,8 @@ export const vehiclesTable = sqliteTable("vehicles_table", {
   make: text().notNull(),
   model: text().notNull(),
   year: int().notNull(),
+  currentOdometer: int().notNull(),
+  vin: text().unique(),
   nickname: text(),
   createdAt: int({ mode: "timestamp" })
     .notNull()
