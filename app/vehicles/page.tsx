@@ -1,0 +1,27 @@
+import Link from "next/link";
+import { getVehicles } from "@/db/queries/vehicles";
+import VehicleCard from "@/components/vehicles/VehicleCard";
+
+export default async function VehiclesPage() {
+  const vehicles = await getVehicles();
+
+  return (
+    <div>
+      <h1>Vehicles Page</h1>
+      <p>
+        Welcome to the vehicles page. Here you can find information about your
+        vehicles.
+      </p>
+      {vehicles.length > 0 ? (
+        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {vehicles.map((vehicle) => (
+            <VehicleCard key={vehicle.id} vehicle={vehicle} />
+          ))}
+        </ul>
+      ) : (
+        <p>No vehicles available.</p>
+      )}
+      <Link href="/vehicles/new">Add new vehicle</Link>
+    </div>
+  );
+}
