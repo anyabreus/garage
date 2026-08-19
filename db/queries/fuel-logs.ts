@@ -1,8 +1,10 @@
 import { eq, desc } from "drizzle-orm";
 import db from "..";
-import { fuelLogsTable } from "../schema";
+import { fuelLogsTable, vehiclesTable } from "../schema";
 
-export const getFuelLogs = async (vehicleId: number) =>
+export const getFuelLogs = async (
+  vehicleId: (typeof vehiclesTable.$inferSelect)["id"],
+) =>
   await db
     .select()
     .from(fuelLogsTable)

@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import db from "@/db";
-import { fuelLogsTable } from "@/db/schema";
+import { fuelLogsTable, vehiclesTable } from "@/db/schema";
 import { getVehicle } from "@/db/queries/vehicles";
 import { updateVehicle } from "./vehicles";
 import { ActionResult } from "@/types/action-result";
@@ -33,7 +33,7 @@ export const addFuelLog = async (
 };
 
 export const addFuelLogFromForm = async (
-  vehicleId: number,
+  vehicleId: (typeof vehiclesTable.$inferSelect)["id"],
   _prevState: ActionResult<typeof fuelLogsTable.$inferSelect> | null,
   formData: FormData,
 ): Promise<ActionResult<typeof fuelLogsTable.$inferSelect>> => {
@@ -61,7 +61,7 @@ export const addFuelLogFromForm = async (
 };
 
 export const deleteFuelLog = async (
-  fuelLogId: number,
+  fuelLogId: (typeof fuelLogsTable.$inferSelect)["id"],
 ): Promise<ActionResult> => {
   try {
     const [deleted] = await db

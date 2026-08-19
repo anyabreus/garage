@@ -1,16 +1,17 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getVehicle } from "@/db/queries/vehicles";
-import { getFuelLogs } from "@/db/queries/fuel-logs";
 import AddFuelLogForm from "@/components/fuel-logs/AddFuelLogForm";
-import FuelLogRow from "@/components/fuel-logs/FuelLogRow";
+import AddMaintenanceLogForm from "@/components/maintenance-logs/AddMaintenanceLogForm";
+import { getVehicleTimeline } from "@/db/queries/timeline";
+import TimelineItem from "@/components/timeline/TimelineItem";
 
 export default async function VehiclePage({
   params,
 }: PageProps<"/vehicles/[id]">) {
   const { id } = await params;
   const vehicleData = await getVehicle(Number(id));
-  const fuelLogs = await getFuelLogs(Number(id));
+  const timeline = await getVehicleTimeline(vehicleData.id);
 
   if (!vehicleData) return notFound();
 
@@ -29,15 +30,14 @@ export default async function VehiclePage({
       <Link href={`/vehicles/${vehicleData.id}/settings`}>Settings</Link>
       <h2>Fuel Logs</h2>
       <AddFuelLogForm />
-      {fuelLogs.length > 0 ? (
-        <ul>
-          {fuelLogs.map((log) => (
-            <FuelLogRow key={log.id} log={log} />
-          ))}
-        </ul>
-      ) : (
-        <p>No fuel logs available.</p>
-      )}
+      <AddMaintenanceLogForm />
+      <div>
+        <h2>History</h2>
+        {timeline.length === 0 && <p>No logs yet.</p>}
+        {timeline.map((entry) => (
+          <TimelineItem key={`${entry.kind}-${entry.data.id}`} entry={entry} />
+        ))}
+      </div>
     </div>
   );
 }
