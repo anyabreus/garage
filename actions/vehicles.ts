@@ -1,14 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import db from "@/db";
 import { vehiclesTable } from "@/db/schema";
-import { redirect } from "next/navigation";
-
-type ActionResult<T = undefined> =
-  | { success: true; data: T }
-  | { success: false; error: string };
+import { ActionResult } from "@/types/action-result";
 
 export const createVehicle = async (
   _prevState: ActionResult<typeof vehiclesTable.$inferSelect> | null,
@@ -49,8 +46,26 @@ export const createVehicle = async (
 };
 
 export const updateVehicle = async (
-  vehicleId: (typeof vehiclesTable.$inferSelect)["id"],
-  _prevState: ActionResult<typeof vehiclesTable.$inferInsert> | null,
+  vehicleId: number,
+  vehicleData: Partial<typeof vehiclesTable.$inferInsert>,
+) => {
+  const normalized = {
+    ...vehicleData,
+    vin: vehicleData.vin?.toUpperCase(),
+  };
+
+  const [updatedVehicle] = await db
+    .update(vehiclesTable)
+    .set(normalized)
+    .where(eq(vehiclesTable.id, vehicleId))
+    .returning();
+
+  return updatedVehicle;
+};
+
+export const updateVehicleFromForm = async (
+  vehicleId: number,
+  _prevState: ActionResult<typeof vehiclesTable.$inferSelect> | null,
   formData: FormData,
 ): Promise<ActionResult<typeof vehiclesTable.$inferSelect>> => {
   const vehicleData = {
@@ -63,22 +78,9 @@ export const updateVehicle = async (
   };
 
   try {
-    const normalized = {
-      ...vehicleData,
-      vin: vehicleData.vin?.toUpperCase(),
-    };
-
-    const [updatedVehicle] = await db
-      .update(vehiclesTable)
-      .set(normalized)
-      .where(eq(vehiclesTable.id, vehicleId))
-      .returning();
-
+    const updatedVehicle = await updateVehicle(vehicleId, vehicleData);
     if (!updatedVehicle) {
-      return {
-        success: false,
-        error: "Vehicle not found.",
-      };
+      return { success: false, error: "Vehicle not found." };
     }
   } catch {
     return {

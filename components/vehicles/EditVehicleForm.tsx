@@ -2,14 +2,14 @@
 
 import { useActionState } from "react";
 import { vehiclesTable } from "@/db/schema";
-import { updateVehicle } from "@/actions/vehicles";
+import { updateVehicleFromForm } from "@/actions/vehicles";
 
 export default function VehicleEditForm({
   vehicleData,
 }: {
   vehicleData: typeof vehiclesTable.$inferSelect;
 }) {
-  const updateVehicleWithId = updateVehicle.bind(null, vehicleData.id);
+  const updateVehicleWithId = updateVehicleFromForm.bind(null, vehicleData.id);
   const [state, formAction, isPending] = useActionState(
     updateVehicleWithId,
     null,
