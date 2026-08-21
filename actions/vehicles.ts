@@ -15,7 +15,8 @@ export const createVehicle = async (
     make: formData.get("make") as string,
     model: formData.get("model") as string,
     year: Number(formData.get("year")),
-    currentOdometer: Number(formData.get("odometer")),
+    initialOdometer: Number(formData.get("currentOdometer")),
+    currentOdometer: Number(formData.get("currentOdometer")),
     vin: (formData.get("vin") as string) || undefined,
     nickname: (formData.get("nickname") as string) || undefined,
   };

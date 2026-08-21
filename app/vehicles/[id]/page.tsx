@@ -28,6 +28,7 @@ export default async function VehiclePage({
       <p>Current Odometer: {vehicleData.currentOdometer}</p>
       {vehicleData.vin && <p>VIN: {vehicleData.vin}</p>}
       <Link href={`/vehicles/${vehicleData.id}/settings`}>Settings</Link>
+      <Link href={`/vehicles/${vehicleData.id}/stats`}>View Stats</Link>
       <h2>Fuel Logs</h2>
       <AddFuelLogForm />
       <AddMaintenanceLogForm />

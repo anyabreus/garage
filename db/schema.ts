@@ -6,6 +6,7 @@ export const vehiclesTable = sqliteTable("vehicles", {
   make: text().notNull(),
   model: text().notNull(),
   year: int().notNull(),
+  initialOdometer: int().notNull(),
   currentOdometer: int().notNull(),
   vin: text().unique(),
   nickname: text(),
