@@ -1,19 +1,19 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getVehicle } from "@/db/queries/vehicles";
-import AddFuelLogForm from "@/components/fuel-logs/AddFuelLogForm";
-import AddMaintenanceLogForm from "@/components/maintenance-logs/AddMaintenanceLogForm";
 import { getVehicleTimeline } from "@/db/queries/timeline";
 import TimelineItem from "@/components/timeline/TimelineItem";
+import AddLogButtons from "@/components/logs/AddLogButtons";
 
 export default async function VehiclePage({
   params,
 }: PageProps<"/vehicles/[id]">) {
   const { id } = await params;
   const vehicleData = await getVehicle(Number(id));
-  const timeline = await getVehicleTimeline(vehicleData.id);
 
   if (!vehicleData) return notFound();
+
+  const timeline = await getVehicleTimeline(vehicleData.id);
 
   return (
     <div>
@@ -30,8 +30,7 @@ export default async function VehiclePage({
       <Link href={`/vehicles/${vehicleData.id}/settings`}>Settings</Link>
       <Link href={`/vehicles/${vehicleData.id}/stats`}>View Stats</Link>
       <h2>Fuel Logs</h2>
-      <AddFuelLogForm />
-      <AddMaintenanceLogForm />
+      <AddLogButtons />
       <div>
         <h2>History</h2>
         {timeline.length === 0 && <p>No logs yet.</p>}
