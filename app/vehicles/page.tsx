@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { getVehicles } from "@/db/queries/vehicles";
 import VehicleCard from "@/components/vehicles/VehicleCard";
+import AddNewVehicleButton from "@/components/vehicles/AddNewVehicleButton";
 
 export default async function VehiclesPage() {
   const vehicles = await getVehicles();
@@ -21,7 +21,7 @@ export default async function VehiclesPage() {
       ) : (
         <p>No vehicles available.</p>
       )}
-      <Link href="/vehicles/new">Add new vehicle</Link>
+      <AddNewVehicleButton />
     </div>
   );
 }
