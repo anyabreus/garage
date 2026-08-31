@@ -9,18 +9,24 @@ export default function AddLogButtons() {
   const [openModal, setOpenModal] = useState<"fuel" | "maintenance" | null>(
     null,
   );
+  const [formKey, setFormKey] = useState(0);
+
+  const openWithReset = (modal: "fuel" | "maintenance") => {
+    setFormKey((k) => k + 1);
+    setOpenModal(modal);
+  };
 
   return (
     <>
-      <button onClick={() => setOpenModal("fuel")}>Log Fuel</button>
-      <button onClick={() => setOpenModal("maintenance")}>Log Service</button>
+      <button onClick={() => openWithReset("fuel")}>Log Fuel</button>
+      <button onClick={() => openWithReset("maintenance")}>Log Service</button>
 
       <Modal
         isOpen={openModal === "fuel"}
         onClose={() => setOpenModal(null)}
         title="Add Fuel Log"
       >
-        <AddFuelLogForm />
+        <AddFuelLogForm key={formKey} />
       </Modal>
 
       <Modal
@@ -28,7 +34,7 @@ export default function AddLogButtons() {
         onClose={() => setOpenModal(null)}
         title="Add Maintenance Log"
       >
-        <AddMaintenanceLogForm />
+        <AddMaintenanceLogForm key={formKey} />
       </Modal>
     </>
   );

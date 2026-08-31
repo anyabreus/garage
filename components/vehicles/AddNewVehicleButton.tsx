@@ -6,16 +6,22 @@ import AddNewVehicleForm from "./AddNewVehicleForm";
 
 export default function AddNewVehicleButton() {
   const [openModal, setOpenModal] = useState(false);
+  const [formKey, setFormKey] = useState(0);
+
+  const openWithReset = () => {
+    setFormKey((k) => k + 1);
+    setOpenModal(true);
+  };
 
   return (
     <>
-      <button onClick={() => setOpenModal(true)}>Add new vehicle</button>
+      <button onClick={openWithReset}>Add new vehicle</button>
       <Modal
         isOpen={openModal}
         onClose={() => setOpenModal(false)}
         title="Add Vehicle"
       >
-        <AddNewVehicleForm />
+        <AddNewVehicleForm key={formKey} />
       </Modal>
     </>
   );

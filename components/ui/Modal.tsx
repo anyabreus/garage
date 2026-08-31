@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export default function Modal({
   isOpen,
@@ -13,26 +13,37 @@ export default function Modal({
   title: string;
   children: React.ReactNode;
 }) {
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", handleEscape);
-    return () => document.removeEventListener("keydown", handleEscape);
-  }, [onClose]);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const mouseDownOnBackdrop = useRef(false);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    if (isOpen && !dialog.open) {
+      dialog.showModal();
+    } else if (!isOpen && dialog.open) {
+      dialog.close();
+    }
+  }, [isOpen]);
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/10 backdrop-blur-sm"
-      onClick={onClose}
+    <dialog
+      ref={dialogRef}
+      onClose={onClose}
+      onMouseDown={(e) => {
+        mouseDownOnBackdrop.current = e.target === dialogRef.current;
+      }}
+      onMouseUp={(e) => {
+        if (mouseDownOnBackdrop.current && e.target === dialogRef.current) {
+          onClose();
+        }
+        mouseDownOnBackdrop.current = false;
+      }}
+      className="m-auto max-h-[90vh] w-full max-w-md rounded-lg shadow-lg backdrop:bg-background/50"
     >
-      <div
-        className="w-full max-h-[90vh] flex flex-col max-w-md rounded-lg bg-background p-6 shadow-lg"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="mb-4 flex items-center justify-between">
+      <div className="flex flex-col">
+        <div className="flex items-center justify-between p-6 pb-4">
           <h2 className="text-lg font-semibold">{title}</h2>
           <button
             onClick={onClose}
@@ -43,6 +54,6 @@ export default function Modal({
         </div>
         <div className="overflow-y-auto p-6 pt-4">{children}</div>
       </div>
-    </div>
+    </dialog>
   );
 }
