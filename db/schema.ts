@@ -39,3 +39,15 @@ export const maintenanceLogsTable = sqliteTable("maintenance_logs", {
   description: text(),
   cost: real().notNull(),
 });
+
+export const remindersTable = sqliteTable("reminders", {
+  id: int().primaryKey({ autoIncrement: true }),
+  vehicleId: int()
+    .notNull()
+    .references(() => vehiclesTable.id),
+  label: text().notNull(),
+  intervalType: text({ enum: ["odometer", "date"] }).notNull(),
+  intervalValue: int().notNull(),
+  lastDoneAt: int({ mode: "timestamp" }).notNull(),
+  lastDoneOdometer: int().notNull(),
+});

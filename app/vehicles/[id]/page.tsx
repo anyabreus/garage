@@ -4,6 +4,7 @@ import { getVehicle } from "@/db/queries/vehicles";
 import { getVehicleTimeline } from "@/db/queries/timeline";
 import TimelineItem from "@/components/timeline/TimelineItem";
 import AddLogButtons from "@/components/logs/AddLogButtons";
+import AddReminderButton from "@/components/reminders/AddReminderButton";
 
 export default async function VehiclePage({
   params,
@@ -31,6 +32,7 @@ export default async function VehiclePage({
       <Link href={`/vehicles/${vehicleData.id}/stats`}>View Stats</Link>
       <h2>Fuel Logs</h2>
       <AddLogButtons />
+      <AddReminderButton />
       <div>
         <h2>History</h2>
         {timeline.length === 0 && <p>No logs yet.</p>}
