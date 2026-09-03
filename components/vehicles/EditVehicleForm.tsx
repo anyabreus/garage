@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { vehiclesTable } from "@/db/schema";
 import { updateVehicleFromForm } from "@/actions/vehicles";
+import Button from "../ui/Button";
 
 export default function VehicleEditForm({
   vehicleData,
@@ -56,9 +57,7 @@ export default function VehicleEditForm({
 
       {state && !state.success && <p className="text-red-500">{state.error}</p>}
 
-      <button type="submit" disabled={isPending}>
-        {isPending ? "Saving..." : "Save"}
-      </button>
+      <Button disabled={isPending}>{isPending ? "Saving..." : "Save"}</Button>
     </form>
   );
 }

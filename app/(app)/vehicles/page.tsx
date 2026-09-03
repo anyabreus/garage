@@ -7,11 +7,8 @@ export default async function VehiclesPage() {
 
   return (
     <div>
-      <h1>Vehicles Page</h1>
-      <p>
-        Welcome to the vehicles page. Here you can find information about your
-        vehicles.
-      </p>
+      <h1>Your garage</h1>
+      <AddNewVehicleButton />
       {vehicles.length > 0 ? (
         <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {vehicles.map((vehicle) => (
@@ -21,7 +18,6 @@ export default async function VehiclesPage() {
       ) : (
         <p>No vehicles available.</p>
       )}
-      <AddNewVehicleButton />
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { useActionState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { createReminderFromForm } from "@/actions/reminders";
+import Button from "../ui/Button";
 
 export default function AddReminderForm({
   onSuccess,
@@ -44,9 +45,9 @@ export default function AddReminderForm({
 
       {state && !state.success && <p className="text-red-500">{state.error}</p>}
 
-      <button type="submit" disabled={isPending}>
+      <Button disabled={isPending}>
         {isPending ? "Saving..." : "Add Reminder"}
-      </button>
+      </Button>
     </form>
   );
 }

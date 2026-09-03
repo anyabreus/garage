@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Modal from "../ui/Modal";
 import AddReminderForm from "../reminders/AddReminderForm";
+import Button from "../ui/Button";
 
 export default function AddLogButtons() {
   const [openModal, setOpenModal] = useState(false);
@@ -15,7 +16,9 @@ export default function AddLogButtons() {
 
   return (
     <>
-      <button onClick={openWithReset}>Add Reminder</button>
+      <Button variant="secondary" onClick={openWithReset}>
+        Add Reminder
+      </Button>
 
       <Modal
         isOpen={openModal}

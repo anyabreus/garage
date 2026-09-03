@@ -3,6 +3,7 @@
 import { useTransition } from "react";
 import { dismissReminder, deleteReminder } from "@/actions/reminders";
 import type { ReminderStatus } from "@/db/queries/reminders";
+import Button from "../ui/Button";
 
 export default function ReminderCard({ status }: { status: ReminderStatus }) {
   const [isPending, startTransition] = useTransition();
@@ -34,28 +35,28 @@ export default function ReminderCard({ status }: { status: ReminderStatus }) {
           </div>
         </div>
         <div className="flex gap-2 ml-4">
-          <button
+          <Button
+            variant="secondary"
             disabled={isPending}
             onClick={() =>
               startTransition(() => {
                 dismissReminder(reminder.id);
               })
             }
-            className="text-sm text-blue-600 hover:text-blue-800 cursor-pointer"
           >
             Mark Done
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="danger"
             disabled={isPending}
             onClick={() =>
               startTransition(() => {
                 deleteReminder(reminder.id);
               })
             }
-            className="text-sm text-gray-400 hover:text-red-600 cursor-pointer"
           >
             Delete
-          </button>
+          </Button>
         </div>
       </div>
     </div>

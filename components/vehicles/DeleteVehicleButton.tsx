@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { deleteVehicle } from "@/actions/vehicles";
 import { vehiclesTable } from "@/db/schema";
+import Button from "../ui/Button";
 
 export default function DeleteVehicleButton({
   vehicleId,
@@ -18,8 +19,8 @@ export default function DeleteVehicleButton({
   };
 
   return (
-    <button type="button" onClick={handleDelete}>
+    <Button variant="danger" type="button" onClick={handleDelete}>
       Delete Vehicle
-    </button>
+    </Button>
   );
 }

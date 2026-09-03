@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { createVehicle } from "@/actions/vehicles";
+import Button from "../ui/Button";
 
 export default function NewVehicleForm() {
   const [state, formAction, isPending] = useActionState(createVehicle, null);
@@ -77,9 +78,9 @@ export default function NewVehicleForm() {
 
       {state && !state.success && <p className="text-red-500">{state.error}</p>}
 
-      <button type="submit" disabled={isPending}>
+      <Button disabled={isPending}>
         {isPending ? "Saving..." : "Add Vehicle"}
-      </button>
+      </Button>
     </form>
   );
 }

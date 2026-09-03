@@ -3,6 +3,7 @@
 import { useTransition } from "react";
 import { deleteFuelLog } from "@/actions/fuel-logs";
 import { deleteMaintenanceLog } from "@/actions/maintenance-logs";
+import Button from "../ui/Button";
 
 export default function DeleteLogButton({
   kind,
@@ -27,8 +28,8 @@ export default function DeleteLogButton({
   };
 
   return (
-    <button onClick={handleDelete} disabled={isPending}>
+    <Button variant="danger" onClick={handleDelete} disabled={isPending}>
       {isPending ? "Deleting..." : "Delete"}
-    </button>
+    </Button>
   );
 }

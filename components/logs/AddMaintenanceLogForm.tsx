@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import { useParams } from "next/navigation";
 import { addMaintenanceLogFromForm } from "@/actions/maintenance-logs";
 import { MAINTENANCE_TYPES } from "@/types/maintenance-logs";
+import Button from "../ui/Button";
 
 export default function AddMaintenanceLogForm() {
   const id = useParams().id;
@@ -36,9 +37,9 @@ export default function AddMaintenanceLogForm() {
         required
       />
       {state && !state.success && <p className="text-red-500">{state.error}</p>}
-      <button type="submit" disabled={isPending}>
+      <Button disabled={isPending}>
         {isPending ? "Saving..." : "Add Maintenance Log"}
-      </button>{" "}
+      </Button>
     </form>
   );
 }

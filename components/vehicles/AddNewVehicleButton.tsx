@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Modal from "../ui/Modal";
 import AddNewVehicleForm from "./AddNewVehicleForm";
+import Button from "../ui/Button";
 
 export default function AddNewVehicleButton() {
   const [openModal, setOpenModal] = useState(false);
@@ -15,7 +16,7 @@ export default function AddNewVehicleButton() {
 
   return (
     <>
-      <button onClick={openWithReset}>Add new vehicle</button>
+      <Button onClick={openWithReset}>Add new vehicle</Button>
       <Modal
         isOpen={openModal}
         onClose={() => setOpenModal(false)}

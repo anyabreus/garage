@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { useParams } from "next/navigation";
 import { addFuelLogFromForm } from "@/actions/fuel-logs";
+import Button from "../ui/Button";
 
 export default function AddFuelLogForm() {
   const id = useParams().id;
@@ -34,9 +35,9 @@ export default function AddFuelLogForm() {
 
       {state && !state.success && <p className="text-red-500">{state.error}</p>}
 
-      <button type="submit" disabled={isPending}>
+      <Button disabled={isPending}>
         {isPending ? "Saving..." : "Add Fuel Log"}
-      </button>
+      </Button>
     </form>
   );
 }

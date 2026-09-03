@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Button from "./Button";
 
 export default function Modal({
   isOpen,
@@ -45,12 +46,9 @@ export default function Modal({
       <div className="flex flex-col">
         <div className="flex items-center justify-between p-6 pb-4">
           <h2 className="text-lg font-semibold">{title}</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-800"
-          >
+          <Button variant="ghost" onClick={onClose}>
             ✕
-          </button>
+          </Button>
         </div>
         <div className="overflow-y-auto p-6 pt-4">{children}</div>
       </div>

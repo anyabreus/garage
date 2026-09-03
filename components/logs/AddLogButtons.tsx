@@ -4,6 +4,7 @@ import { useState } from "react";
 import Modal from "../ui/Modal";
 import AddFuelLogForm from "./AddFuelLogForm";
 import AddMaintenanceLogForm from "./AddMaintenanceLogForm";
+import Button from "../ui/Button";
 
 export default function AddLogButtons() {
   const [openModal, setOpenModal] = useState<"fuel" | "maintenance" | null>(
@@ -18,8 +19,12 @@ export default function AddLogButtons() {
 
   return (
     <>
-      <button onClick={() => openWithReset("fuel")}>Log Fuel</button>
-      <button onClick={() => openWithReset("maintenance")}>Log Service</button>
+      <Button variant="secondary" onClick={() => openWithReset("fuel")}>
+        Log Fuel
+      </Button>
+      <Button variant="secondary" onClick={() => openWithReset("maintenance")}>
+        Log Service
+      </Button>
 
       <Modal
         isOpen={openModal === "fuel"}
