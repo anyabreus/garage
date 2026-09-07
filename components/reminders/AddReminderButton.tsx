@@ -5,7 +5,7 @@ import Modal from "../ui/Modal";
 import AddReminderForm from "../reminders/AddReminderForm";
 import Button from "../ui/Button";
 
-export default function AddLogButtons() {
+export default function AddReminderButton() {
   const [openModal, setOpenModal] = useState(false);
   const [formKey, setFormKey] = useState(0);
 
@@ -16,7 +16,7 @@ export default function AddLogButtons() {
 
   return (
     <>
-      <Button variant="secondary" onClick={openWithReset}>
+      <Button variant="secondary" size="sm" onClick={openWithReset}>
         Add Reminder
       </Button>
 

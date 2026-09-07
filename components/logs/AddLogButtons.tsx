@@ -19,10 +19,18 @@ export default function AddLogButtons() {
 
   return (
     <>
-      <Button variant="secondary" onClick={() => openWithReset("fuel")}>
+      <Button
+        variant="secondary"
+        size="sm"
+        onClick={() => openWithReset("fuel")}
+      >
         Log Fuel
       </Button>
-      <Button variant="secondary" onClick={() => openWithReset("maintenance")}>
+      <Button
+        variant="secondary"
+        size="sm"
+        onClick={() => openWithReset("maintenance")}
+      >
         Log Service
       </Button>
 

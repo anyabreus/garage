@@ -4,6 +4,7 @@ import { useTransition } from "react";
 import { deleteFuelLog } from "@/actions/fuel-logs";
 import { deleteMaintenanceLog } from "@/actions/maintenance-logs";
 import Button from "../ui/Button";
+import { Trash2 } from "lucide-react";
 
 export default function DeleteLogButton({
   kind,
@@ -28,8 +29,14 @@ export default function DeleteLogButton({
   };
 
   return (
-    <Button variant="danger" onClick={handleDelete} disabled={isPending}>
-      {isPending ? "Deleting..." : "Delete"}
+    <Button
+      variant="danger"
+      size="icon"
+      onClick={handleDelete}
+      disabled={isPending}
+      aria-label="Delete log"
+    >
+      <Trash2 size={14} />
     </Button>
   );
 }

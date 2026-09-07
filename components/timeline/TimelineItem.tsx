@@ -1,36 +1,49 @@
 import { TimelineEntry } from "@/types/timeline";
 import DeleteLogButton from "./DeleteLogButton";
+import { Wrench, Fuel } from "lucide-react";
 
 const TIMELINE_STYLES = {
-  fuel: { border: "border-blue-500", icon: "⛽" },
-  maintenance: { border: "border-orange-500", icon: "🔧" },
+  fuel: { Icon: Fuel, iconColor: "text-signal" },
+  maintenance: { Icon: Wrench, iconColor: "text-coolant" },
 } as const;
 
 export default function TimelineItem({ entry }: { entry: TimelineEntry }) {
-  const { border, icon } = TIMELINE_STYLES[entry.kind];
+  const { Icon, iconColor } = TIMELINE_STYLES[entry.kind];
 
   return (
-    <div className={`border-l-4 ${border} pl-3 py-2 space-y-1`}>
-      <div className="flex items-center gap-2">
-        <span>{icon}</span>
-        {entry.kind === "fuel" ? (
-          <strong>
-            {entry.data.fuelAmount} L — {entry.data.totalCost.toFixed(2)}
-          </strong>
-        ) : (
-          <strong>
-            {entry.data.type.replace("_", " ")} — {entry.data.cost.toFixed(2)}
-          </strong>
+    <div className="flex items-start gap-3 py-2.5">
+      <Icon size={16} className={`mt-0.5 ${iconColor} self-center`} />
+      <div className="flex-1">
+        <div className="flex items-center justify-between">
+          {entry.kind === "fuel" ? (
+            <span className="text-sm text-foreground">
+              Fuel — {entry.data.fuelAmount} L
+            </span>
+          ) : (
+            <span className="text-sm capitalize text-foreground">
+              {entry.data.type.replace("_", " ")}
+            </span>
+          )}
+          <span className="font-mono text-sm text-foreground">
+            $
+            {(entry.kind === "fuel"
+              ? entry.data.totalCost
+              : entry.data.cost
+            ).toFixed(2)}
+          </span>
+        </div>
+
+        <p className="mt-0.5 text-xs text-text-secondary">
+          {entry.data.odometer.toLocaleString()} km ·{" "}
+          {entry.date.toDateString()}
+        </p>
+
+        {entry.kind === "maintenance" && entry.data.description && (
+          <p className="mt-1 text-xs text-text-secondary">
+            {entry.data.description}
+          </p>
         )}
       </div>
-
-      <div>
-        {entry.data.odometer} km · {entry.date.toDateString()}
-      </div>
-
-      {entry.kind === "maintenance" && entry.data.description && (
-        <div>{entry.data.description}</div>
-      )}
 
       <DeleteLogButton kind={entry.kind} logId={entry.data.id} />
     </div>

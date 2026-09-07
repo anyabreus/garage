@@ -46,7 +46,7 @@ export default function Modal({
       <div className="flex flex-col">
         <div className="flex items-center justify-between p-6 pb-4">
           <h2 className="text-lg font-semibold">{title}</h2>
-          <Button variant="ghost" onClick={onClose}>
+          <Button variant="ghost" size="icon" onClick={onClose}>
             ✕
           </Button>
         </div>
