@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 import { createVehicle } from "@/actions/vehicles";
 import Button from "../ui/Button";
+import Input from "../ui/Input";
 
 export default function NewVehicleForm() {
   const [state, formAction, isPending] = useActionState(createVehicle, null);
@@ -42,7 +43,7 @@ export default function NewVehicleForm() {
 
   return (
     <form action={formAction}>
-      <input
+      <Input
         name="vin"
         placeholder="VIN (Optional)"
         maxLength={17}
@@ -51,21 +52,21 @@ export default function NewVehicleForm() {
       {decoding && <p className="text-sm text-gray-500">Decoding VIN...</p>}
       {decodeError && <p className="text-sm text-amber-600">{decodeError}</p>}
 
-      <input
+      <Input
         name="make"
         defaultValue={prefill.make}
         key={prefill.make}
         placeholder="Make"
         required
       />
-      <input
+      <Input
         name="model"
         defaultValue={prefill.model}
         key={prefill.model}
         placeholder="Model"
         required
       />
-      <input
+      <Input
         type="number"
         name="year"
         defaultValue={prefill.year}
@@ -73,8 +74,8 @@ export default function NewVehicleForm() {
         placeholder="Year"
         required
       />
-      <input type="number" name="odometer" placeholder="Odometer" required />
-      <input name="nickname" placeholder="Nickname (Optional)" />
+      <Input type="number" name="odometer" placeholder="Odometer" required />
+      <Input name="nickname" placeholder="Nickname (Optional)" />
 
       {state && !state.success && <p className="text-red-500">{state.error}</p>}
 

@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import { vehiclesTable } from "@/db/schema";
 import { updateVehicleFromForm } from "@/actions/vehicles";
 import Button from "../ui/Button";
+import Input from "../ui/Input";
 
 export default function VehicleEditForm({
   vehicleData,
@@ -18,38 +19,38 @@ export default function VehicleEditForm({
 
   return (
     <form action={formAction}>
-      <input
+      <Input
         name="nickname"
         placeholder="Nickname (Optional)"
         defaultValue={vehicleData?.nickname || ""}
       />
-      <input
+      <Input
         name="make"
         placeholder="Make"
         defaultValue={vehicleData?.make}
         required
       />
-      <input
+      <Input
         name="model"
         placeholder="Model"
         defaultValue={vehicleData?.model}
         required
       />
-      <input
+      <Input
         type="number"
         name="year"
         placeholder="Year"
         defaultValue={vehicleData?.year}
         required
       />
-      <input
+      <Input
         type="number"
         name="currentOdometer"
         placeholder="Current Odometer"
         defaultValue={vehicleData?.currentOdometer}
         required
       />
-      <input
+      <Input
         name="vin"
         placeholder="VIN (Optional)"
         defaultValue={vehicleData?.vin || ""}

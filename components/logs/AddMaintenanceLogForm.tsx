@@ -5,6 +5,10 @@ import { useParams } from "next/navigation";
 import { addMaintenanceLogFromForm } from "@/actions/maintenance-logs";
 import { MAINTENANCE_TYPES } from "@/types/maintenance-logs";
 import Button from "../ui/Button";
+import Input from "../ui/Input";
+import Select from "../ui/Select";
+import Textarea from "../ui/Textarea";
+import { capitalizeString } from "@/lib/utils";
 
 export default function AddMaintenanceLogForm() {
   const id = useParams().id;
@@ -19,19 +23,20 @@ export default function AddMaintenanceLogForm() {
 
   return (
     <form action={formAction}>
-      <input type="date" name="date" placeholder="Date" required />
-      <input type="number" name="odometer" placeholder="Odometer" required />
-      <select name="type" defaultValue="other" required>
+      <Input type="date" name="date" placeholder="Date" required />
+      <Input type="number" name="odometer" placeholder="Odometer" required />
+      <Select name="type" defaultValue="other" required>
         {MAINTENANCE_TYPES.map((t) => (
           <option key={t} value={t}>
-            {t.replace("_", " ")}
+            {capitalizeString(t.replace("_", " "))}
           </option>
         ))}
-      </select>
-      <textarea name="description" placeholder="Description" />
-      <input
+      </Select>
+      <Textarea name="description" placeholder="Description" />
+      <Input
         type="number"
         step="0.01"
+        min="0"
         name="cost"
         placeholder="Cost"
         required

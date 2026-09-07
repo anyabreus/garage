@@ -48,34 +48,59 @@
     display: block;
     font-size: 0.8125rem;
     color: var(--color-text-secondary);
-    margin-bottom: 0.25rem;
+  }
+
+  input[type="checkbox"] {
+    accent-color: var(--color-signal);
+    width: 1rem;
+    height: 1rem;
+  }
+
+  @supports (appearance: base-select) {
+    .custom-select {
+      appearance: base-select;
+    }
+
+    .custom-select::picker(select) {
+      appearance: base-select;
+      border: 1px solid var(--color-border);
+      border-radius: 0.5rem;
+      background: var(--color-surface);
+      padding: 0.25rem;
+      margin-top: 0.25rem;
+    }
+
+    .custom-select option {
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.375rem;
+      color: var(--color-foreground);
+      font-size: 0.875rem;
+    }
+
+    .custom-select option:hover {
+      background: var(--color-signal) / 10%;
+    }
+
+    .custom-select option:checked {
+      background: color-mix(
+        in oklch,
+        var(--color-signal) 12%,
+        var(--color-surface)
+      );
+      font-weight: 500;
+    }
+
+    .custom-select::picker-icon {
+      color: var(--color-text-secondary);
+    }
   }
 
   a {
     color: var(--color-foreground);
     text-decoration: none;
-  }
-  a:hover {
-    color: var(--color-signal);
-  }
 
-  input,
-  select,
-  textarea {
-    width: 100%;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-    color: var(--color-foreground);
-    font-family: var(--font-sans);
-  }
-  input:focus,
-  select:focus,
-  textarea:focus {
-    outline: none;
-    border-color: var(--color-signal);
-    box-shadow: 0 0 0 3px oklch(72% 0.19 47 / 15%);
+    &:hover {
+      color: var(--color-signal);
+    }
   }
 }

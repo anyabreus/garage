@@ -4,6 +4,8 @@ import { useActionState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { createReminderFromForm } from "@/actions/reminders";
 import Button from "../ui/Button";
+import Input from "../ui/Input";
+import Select from "../ui/Select";
 
 export default function AddReminderForm({
   onSuccess,
@@ -25,17 +27,17 @@ export default function AddReminderForm({
 
   return (
     <form action={formAction}>
-      <input name="label" placeholder="Label (e.g. Oil change)" required />
+      <Input name="label" placeholder="Label (e.g. Oil change)" required />
 
       <label>
         Repeats by
-        <select name="intervalType" defaultValue="odometer">
+        <Select name="intervalType" defaultValue="odometer">
           <option value="odometer">Distance (km)</option>
           <option value="date">Time (days)</option>
-        </select>
+        </Select>
       </label>
 
-      <input
+      <Input
         name="intervalValue"
         type="number"
         min={1}
