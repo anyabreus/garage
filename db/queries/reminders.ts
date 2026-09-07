@@ -65,3 +65,16 @@ export const getUpcomingReminders = async (): Promise<ReminderStatus[]> => {
     })
     .sort((a, b) => a.remaining - b.remaining);
 };
+
+export const getDueReminderCountsByVehicle = async (): Promise<
+  Record<number, number>
+> => {
+  const reminders = await getUpcomingReminders();
+
+  return reminders.reduce<Record<number, number>>((counts, status) => {
+    if (status.isDue) {
+      counts[status.vehicle.id] = (counts[status.vehicle.id] ?? 0) + 1;
+    }
+    return counts;
+  }, {});
+};

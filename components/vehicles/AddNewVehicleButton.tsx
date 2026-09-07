@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Modal from "../ui/Modal";
+import { Plus } from "lucide-react";
 import AddNewVehicleForm from "./AddNewVehicleForm";
+import Modal from "../ui/Modal";
 import Button from "../ui/Button";
 
 export default function AddNewVehicleButton() {
@@ -16,7 +17,10 @@ export default function AddNewVehicleButton() {
 
   return (
     <>
-      <Button onClick={openWithReset}>Add new vehicle</Button>
+      <Button onClick={openWithReset}>
+        <Plus size={15} />
+        Add vehicle
+      </Button>
       <Modal
         isOpen={openModal}
         onClose={() => setOpenModal(false)}

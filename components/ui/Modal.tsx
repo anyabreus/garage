@@ -50,7 +50,7 @@ export default function Modal({
             ✕
           </Button>
         </div>
-        <div className="overflow-y-auto p-6 pt-4">{children}</div>
+        <div className="overflow-y-auto p-6 pt-0">{children}</div>
       </div>
     </dialog>
   );

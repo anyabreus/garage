@@ -1,87 +1,63 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState } from "react";
 import { createVehicle } from "@/actions/vehicles";
-import Button from "../ui/Button";
+import { useVinDecode } from "@/hooks/useVinDecode";
 import Input from "../ui/Input";
+import FormField from "../ui/FormField";
+import FormError from "../ui/FormError";
+import SubmitButton from "../ui/SubmitButton";
 
 export default function NewVehicleForm() {
   const [state, formAction, isPending] = useActionState(createVehicle, null);
-  const [decoding, setDecoding] = useState(false);
-  const [decodeError, setDecodeError] = useState<string | null>(null);
-  const [prefill, setPrefill] = useState<{
-    make?: string;
-    model?: string;
-    year?: number;
-  }>({});
-
-  const handleVinBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
-    const vin = e.target.value.trim().toUpperCase();
-    if (vin.length !== 17) return;
-
-    setDecoding(true);
-    setDecodeError(null);
-
-    try {
-      const res = await fetch(`/api/vin?vin=${vin}`);
-      if (!res.ok) {
-        setDecodeError(
-          "Couldn't decode this VIN — you can still fill in the details manually.",
-        );
-        return;
-      }
-      const data = await res.json();
-      setPrefill({ make: data.make, model: data.model, year: data.year });
-    } catch {
-      setDecodeError(
-        "Couldn't reach the VIN decoder — you can still fill in the details manually.",
-      );
-    } finally {
-      setDecoding(false);
-    }
-  };
+  const { decoding, decodeError, prefill, handleVinBlur } = useVinDecode();
 
   return (
-    <form action={formAction}>
-      <Input
-        name="vin"
-        placeholder="VIN (Optional)"
-        maxLength={17}
-        onBlur={handleVinBlur}
-      />
-      {decoding && <p className="text-sm text-gray-500">Decoding VIN...</p>}
-      {decodeError && <p className="text-sm text-amber-600">{decodeError}</p>}
+    <form action={formAction} className="flex flex-col gap-2">
+      <FormField label="VIN (optional)" htmlFor="vin">
+        <Input id="vin" name="vin" maxLength={17} onBlur={handleVinBlur} />
+        {decoding && (
+          <p className="text-xs text-text-secondary">Decoding VIN...</p>
+        )}
+        {decodeError && <p className="text-xs text-signal">{decodeError}</p>}
+      </FormField>
 
-      <Input
-        name="make"
-        defaultValue={prefill.make}
-        key={prefill.make}
-        placeholder="Make"
-        required
-      />
-      <Input
-        name="model"
-        defaultValue={prefill.model}
-        key={prefill.model}
-        placeholder="Model"
-        required
-      />
-      <Input
-        type="number"
-        name="year"
-        defaultValue={prefill.year}
-        key={prefill.year}
-        placeholder="Year"
-        required
-      />
-      <Input type="number" name="odometer" placeholder="Odometer" required />
-      <Input name="nickname" placeholder="Nickname (Optional)" />
+      <FormField label="Make" htmlFor="make">
+        <Input
+          id="make"
+          name="make"
+          defaultValue={prefill.make}
+          key={prefill.make ?? "make"}
+          required
+        />
+      </FormField>
+      <FormField label="Model" htmlFor="model">
+        <Input
+          id="model"
+          name="model"
+          defaultValue={prefill.model}
+          key={prefill.model}
+          required
+        />
+      </FormField>
+      <FormField label="Year" htmlFor="year">
+        <Input
+          id="year"
+          name="year"
+          defaultValue={prefill.year}
+          key={prefill.year}
+          required
+        />
+      </FormField>
+      <FormField label="Odometer" htmlFor="odometer">
+        <Input id="odometer" type="number" name="odometer" required />
+      </FormField>
+      <FormField label="Nickname (Optional)" htmlFor="nickname">
+        <Input id="nickname" name="nickname" />
+      </FormField>
 
-      {state && !state.success && <p className="text-red-500">{state.error}</p>}
-
-      <Button disabled={isPending}>
-        {isPending ? "Saving..." : "Add Vehicle"}
-      </Button>
+      <FormError message={!state?.success ? state?.error : undefined} />
+      <SubmitButton isPending={isPending} label="Add Vehicle" />
     </form>
   );
 }

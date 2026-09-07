@@ -6,6 +6,9 @@ import { createReminderFromForm } from "@/actions/reminders";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
 import Select from "../ui/Select";
+import FormField from "../ui/FormField";
+import FormError from "../ui/FormError";
+import SubmitButton from "../ui/SubmitButton";
 
 export default function AddReminderForm({
   onSuccess,
@@ -26,30 +29,31 @@ export default function AddReminderForm({
   }, [state, onSuccess]);
 
   return (
-    <form action={formAction}>
-      <Input name="label" placeholder="Label (e.g. Oil change)" required />
+    <form action={formAction} className="flex flex-col gap-2">
+      <FormField label="Label" htmlFor="label">
+        <Input id="label" name="label" placeholder="e.g. Oil change" required />
+      </FormField>
 
-      <label>
-        Repeats by
-        <Select name="intervalType" defaultValue="odometer">
+      <FormField label="Repeats by" htmlFor="intervalType">
+        <Select id="intervalType" name="intervalType" defaultValue="odometer">
           <option value="odometer">Distance (km)</option>
           <option value="date">Time (days)</option>
         </Select>
-      </label>
+      </FormField>
 
-      <Input
-        name="intervalValue"
-        type="number"
-        min={1}
-        placeholder="Interval Value"
-        required
-      />
+      <FormField label="Interval Value" htmlFor="intervalValue">
+        <Input
+          id="intervalValue"
+          name="intervalValue"
+          type="number"
+          min={1}
+          placeholder="Interval Value"
+          required
+        />
+      </FormField>
 
-      {state && !state.success && <p className="text-red-500">{state.error}</p>}
-
-      <Button disabled={isPending}>
-        {isPending ? "Saving..." : "Add Reminder"}
-      </Button>
+      <FormError message={!state?.success ? state?.error : undefined} />
+      <SubmitButton isPending={isPending} label="Add Reminder" />
     </form>
   );
 }
