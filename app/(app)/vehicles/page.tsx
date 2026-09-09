@@ -20,7 +20,7 @@ export default async function VehiclesPage() {
           No vehicles yet — add your first one to start tracking it.
         </div>
       ) : (
-        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <ul className="grid grid-cols-2 gap-3">
           {vehicles.map((vehicle) => (
             <li key={vehicle.id}>
               <VehicleCard

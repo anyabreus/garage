@@ -40,69 +40,90 @@ export default async function VehicleStatsPage({
     maintenanceLogs,
   );
 
+  const hasData = fuelLogs.length > 0 || maintenanceLogs.length > 0;
+  const vehicleName = vehicle.nickname || `${vehicle.make} ${vehicle.model}`;
+
   return (
-    <div>
+    <>
       <BackLink
         href={`/vehicles/${vehicle.id}`}
-        label={`Back to ${vehicle.nickname || `${vehicle.make} ${vehicle.model}`}`}
+        label={`Back to ${vehicleName}`}
       />
+      <div className="mx-auto flex max-w-3xl flex-col gap-4">
+        <h1>Stats — {vehicleName}</h1>
 
-      <h1>
-        Stats —{" "}
-        {vehicle.nickname || `${vehicle.year} ${vehicle.make} ${vehicle.model}`}
-      </h1>
+        {!hasData ? (
+          <div className="rounded-xl border border-dashed border-border bg-surface p-8 text-center text-sm text-text-secondary">
+            No logs yet — stats will appear once you add fuel or service
+            entries.
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-4 gap-3">
+              <StatsCard
+                label="Avg. consumption"
+                value={
+                  avgConsumption !== null ? avgConsumption.toFixed(1) : "—"
+                }
+                unit={avgConsumption !== null ? "L/100km" : undefined}
+              />
+              <StatsCard
+                label="Cost per km"
+                value={
+                  costPerDistance !== null
+                    ? `$${costPerDistance.toFixed(2)}`
+                    : "—"
+                }
+              />
+              <StatsCard
+                label="Fuel spend"
+                value={`$${spend.fuel.toFixed(2)}`}
+              />
+              <StatsCard
+                label="Maintenance spend"
+                value={`$${spend.maintenance.toFixed(2)}`}
+              />
+            </div>
 
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <StatsCard
-          label="Avg. Consumption"
-          value={
-            avgConsumption !== null
-              ? `${avgConsumption.toFixed(1)} L/100km`
-              : "—"
-          }
-        />
-        <StatsCard
-          label="Cost per Distance"
-          value={costPerDistance !== null ? costPerDistance.toFixed(2) : "—"}
-        />
-        <StatsCard label="Total Fuel Spend" value={spend.fuel.toFixed(2)} />
-        <StatsCard
-          label="Total Maintenance Spend"
-          value={spend.maintenance.toFixed(2)}
-        />
+            {consumptionSeries.length > 0 && (
+              <section className="rounded-xl border border-border bg-surface p-5">
+                <h2 className="mb-3">Consumption over time</h2>
+                <ConsumptionChart data={consumptionSeries} />
+              </section>
+            )}
+
+            {monthlySpend.length > 0 && (
+              <section className="rounded-xl border border-border bg-surface p-5">
+                <h2 className="mb-3">Spend by month</h2>
+                <SpendByMonthChart data={monthlySpend} />
+              </section>
+            )}
+
+            {Object.keys(maintenanceBreakdown).length > 0 && (
+              <section className="rounded-xl border border-border bg-surface p-5">
+                <h2 className="mb-3">Maintenance by type</h2>
+                <ul className="flex flex-col">
+                  {Object.entries(maintenanceBreakdown).map(
+                    ([type, cost], i, arr) => (
+                      <li
+                        key={type}
+                        className={`flex items-center justify-between py-2 text-sm ${
+                          i < arr.length - 1 ? "border-b border-border" : ""
+                        }`}
+                      >
+                        <span className="capitalize">
+                          {type.replace("_", " ")}
+                        </span>
+                        <span className="font-mono">${cost.toFixed(2)}</span>
+                      </li>
+                    ),
+                  )}
+                </ul>
+              </section>
+            )}
+          </>
+        )}
       </div>
-
-      {consumptionSeries.length > 0 && (
-        <section>
-          <h2>Consumption Over Time</h2>
-          <ConsumptionChart data={consumptionSeries} />
-        </section>
-      )}
-
-      {monthlySpend.length > 0 && (
-        <section>
-          <h2>Spend by Month</h2>
-          <SpendByMonthChart data={monthlySpend} />
-        </section>
-      )}
-
-      {Object.keys(maintenanceBreakdown).length > 0 && (
-        <section>
-          <h2>Maintenance by Type</h2>
-          <ul>
-            {Object.entries(maintenanceBreakdown).map(([type, cost]) => (
-              <li key={type}>
-                <span>{type.replace("_", " ")}</span>
-                <span>{cost.toFixed(2)}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {fuelLogs.length === 0 && maintenanceLogs.length === 0 && (
-        <p>No logs yet — stats will appear once you add some.</p>
-      )}
-    </div>
+    </>
   );
 }

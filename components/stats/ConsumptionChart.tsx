@@ -7,6 +7,7 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  CartesianGrid,
 } from "recharts";
 
 export default function ConsumptionChart({
@@ -20,12 +21,40 @@ export default function ConsumptionChart({
   }));
 
   return (
-    <ResponsiveContainer width="100%" height={250}>
+    <ResponsiveContainer width="100%" height={220}>
       <LineChart data={chartData}>
-        <XAxis dataKey="date" />
-        <YAxis />
-        <Tooltip />
-        <Line type="monotone" dataKey="value" stroke="#3b82f6" />
+        <CartesianGrid
+          stroke="var(--color-border)"
+          strokeDasharray="3 3"
+          vertical={false}
+        />
+        <XAxis
+          dataKey="date"
+          stroke="var(--color-text-secondary)"
+          fontSize={11}
+          tickLine={false}
+        />
+        <YAxis
+          stroke="var(--color-text-secondary)"
+          fontSize={11}
+          tickLine={false}
+          axisLine={false}
+        />
+        <Tooltip
+          contentStyle={{
+            background: "var(--color-surface)",
+            border: "1px solid var(--color-border)",
+            borderRadius: 8,
+            fontSize: 12,
+          }}
+        />
+        <Line
+          type="monotone"
+          dataKey="value"
+          stroke="var(--color-signal)"
+          strokeWidth={2}
+          dot={false}
+        />
       </LineChart>
     </ResponsiveContainer>
   );
