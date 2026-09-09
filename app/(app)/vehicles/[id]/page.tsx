@@ -6,6 +6,7 @@ import { getVehicleTimeline } from "@/db/queries/timeline";
 import AddLogButtons from "@/components/logs/AddLogButtons";
 import AddReminderButton from "@/components/reminders/AddReminderButton";
 import Timeline from "@/components/timeline/Timeline";
+import BackLink from "@/components/ui/BackLink";
 
 export default async function VehiclePage({
   params,
@@ -20,6 +21,7 @@ export default async function VehiclePage({
 
   return (
     <div className="flex flex-col gap-4">
+      <BackLink href="/vehicles" label="Back to garage" />
       <div className="flex items-start justify-between">
         <div>
           <p className="text-xs text-text-secondary">

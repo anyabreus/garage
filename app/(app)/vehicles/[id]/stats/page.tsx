@@ -13,6 +13,7 @@ import {
 import StatsCard from "@/components/stats/StatsCard";
 import ConsumptionChart from "@/components/stats/ConsumptionChart";
 import SpendByMonthChart from "@/components/stats/SpendByMonthChart";
+import BackLink from "@/components/ui/BackLink";
 
 export default async function VehicleStatsPage({
   params,
@@ -41,6 +42,11 @@ export default async function VehicleStatsPage({
 
   return (
     <div>
+      <BackLink
+        href={`/vehicles/${vehicle.id}`}
+        label={`Back to ${vehicle.nickname || `${vehicle.make} ${vehicle.model}`}`}
+      />
+
       <h1>
         Stats —{" "}
         {vehicle.nickname || `${vehicle.year} ${vehicle.make} ${vehicle.model}`}

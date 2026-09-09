@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import { vehiclesTable } from "@/db/schema";
 import { updateVehicleFromForm } from "@/actions/vehicles";
-import Button from "../ui/Button";
+import { useVinDecode } from "@/hooks/useVinDecode";
 import Input from "../ui/Input";
 import FormField from "../ui/FormField";
 import FormError from "../ui/FormError";
@@ -19,21 +19,29 @@ export default function EditVehicleForm({
     updateVehicleWithId,
     null,
   );
+  const { decoding, decodeError, prefill, handleVinBlur } = useVinDecode();
 
   return (
     <form action={formAction} className="flex flex-col gap-2">
-      <FormField label="Nickname (Optional)" htmlFor="nickname">
+      <FormField label="VIN (Optional)" htmlFor="vin">
         <Input
-          id="nickname"
-          name="nickname"
-          defaultValue={vehicleData?.nickname || ""}
+          id="vin"
+          name="vin"
+          defaultValue={vehicleData?.vin || ""}
+          maxLength={17}
+          onBlur={handleVinBlur}
         />
+        {decoding && (
+          <p className="text-xs text-text-secondary">Decoding VIN...</p>
+        )}
+        {decodeError && <p className="text-xs text-signal">{decodeError}</p>}
       </FormField>
       <FormField label="Make" htmlFor="make">
         <Input
           id="make"
           name="make"
-          defaultValue={vehicleData?.make}
+          defaultValue={prefill.make ?? vehicleData?.make}
+          key={prefill.make ?? "make"}
           required
         />
       </FormField>
@@ -41,7 +49,8 @@ export default function EditVehicleForm({
         <Input
           id="model"
           name="model"
-          defaultValue={vehicleData?.model}
+          defaultValue={prefill.model ?? vehicleData?.model}
+          key={prefill.model ?? "model"}
           required
         />
       </FormField>
@@ -50,8 +59,16 @@ export default function EditVehicleForm({
           id="year"
           name="year"
           type="number"
-          defaultValue={vehicleData?.year}
+          defaultValue={prefill.year ?? vehicleData?.year}
+          key={prefill.year ?? "year"}
           required
+        />
+      </FormField>
+      <FormField label="Nickname (Optional)" htmlFor="nickname">
+        <Input
+          id="nickname"
+          name="nickname"
+          defaultValue={vehicleData?.nickname || ""}
         />
       </FormField>
       <FormField label="Current Odometer" htmlFor="currentOdometer">
@@ -59,17 +76,14 @@ export default function EditVehicleForm({
           id="currentOdometer"
           type="number"
           name="currentOdometer"
+          min={0}
           defaultValue={vehicleData?.currentOdometer}
           required
         />
       </FormField>
-      <FormField label="VIN (Optional)" htmlFor="vin">
-        <Input id="vin" name="vin" defaultValue={vehicleData?.vin || ""} />
-      </FormField>
 
       <FormError message={!state?.success ? state?.error : undefined} />
-
-      <SubmitButton isPending={isPending} label="Save" />
+      <SubmitButton isPending={isPending} label="Save Changes" />
     </form>
   );
 }

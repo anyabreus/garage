@@ -3,7 +3,6 @@
 import { useActionState } from "react";
 import { useParams } from "next/navigation";
 import { addFuelLogFromForm } from "@/actions/fuel-logs";
-import Button from "../ui/Button";
 import Input from "../ui/Input";
 import FormField from "../ui/FormField";
 import FormError from "../ui/FormError";
@@ -42,7 +41,7 @@ export default function AddFuelLogForm() {
           name="isFullTank"
           defaultChecked
         />
-        <label htmlFor="isFullTank" className="mb-0 text-sm text-foreground">
+        <label htmlFor="isFullTank" className="mb-0 text-sm">
           Filled the tank completely
         </label>
       </div>

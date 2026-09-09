@@ -16,15 +16,13 @@ export default function TimelineItem({ entry }: { entry: TimelineEntry }) {
       <div className="flex-1">
         <div className="flex items-center justify-between">
           {entry.kind === "fuel" ? (
-            <span className="text-sm text-foreground">
-              Fuel — {entry.data.fuelAmount} L
-            </span>
+            <span className="text-sm">Fuel — {entry.data.fuelAmount} L</span>
           ) : (
-            <span className="text-sm capitalize text-foreground">
+            <span className="text-sm capitalize">
               {entry.data.type.replace("_", " ")}
             </span>
           )}
-          <span className="font-mono text-sm text-foreground">
+          <span className="font-mono text-sm">
             $
             {(entry.kind === "fuel"
               ? entry.data.totalCost
