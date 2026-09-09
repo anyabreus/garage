@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { Check, Trash2 } from "lucide-react";
 import { dismissReminder, deleteReminder } from "@/actions/reminders";
 import type { ReminderStatus } from "@/db/queries/reminders";
 import Button from "../ui/Button";
@@ -11,51 +12,68 @@ export default function ReminderCard({ status }: { status: ReminderStatus }) {
 
   const unit = reminder.intervalType === "odometer" ? "km" : "days";
   const progressPercent = Math.min(Math.max(progress * 100, 0), 100);
+  const isCloseToDue = progressPercent > 85;
+  const vehicleName = vehicle.nickname || `${vehicle.make} ${vehicle.model}`;
 
   return (
     <div
-      className={`rounded-lg border p-3 ${isDue ? "border-red-400 bg-red-50" : ""}`}
+      className={
+        isDue
+          ? "rounded-xl border-l-4 border-danger bg-surface p-3.5 shadow-sm"
+          : "rounded-xl border border-border bg-surface p-3.5"
+      }
     >
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3">
         <div className="flex-1">
-          <div className="font-medium">
-            {reminder.label} —{" "}
-            {vehicle.nickname || `${vehicle.make} ${vehicle.model}`}
-          </div>
-          <div className="text-sm text-gray-500">
+          <p>
+            {reminder.label}{" "}
+            <span className="text-text-secondary">— {vehicleName}</span>
+          </p>
+          <p
+            className={`mt-0.5 text-xs ${isDue ? "text-danger" : "text-text-secondary"}`}
+          >
             {isDue
               ? `Overdue by ${Math.abs(remaining)} ${unit}`
               : `Due in ${remaining} ${unit}`}
-          </div>
-          <div className="mt-2 h-1.5 w-full rounded-full bg-gray-200">
-            <div
-              className={`h-1.5 rounded-full ${isDue ? "bg-red-500" : "bg-blue-500"}`}
-              style={{ width: `${progressPercent}%` }}
-            />
-          </div>
+          </p>
+
+          {!isDue && (
+            <div className="mt-2 h-1 w-full rounded-full bg-border">
+              <div
+                className={`h-full rounded-full ${isCloseToDue ? "bg-signal" : "bg-coolant"}`}
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+          )}
         </div>
-        <div className="flex gap-2 ml-4">
+
+        <div className="flex shrink-0 gap-1">
           <Button
-            variant="secondary"
+            variant="ghost"
+            size="icon"
             disabled={isPending}
             onClick={() =>
               startTransition(() => {
                 dismissReminder(reminder.id);
               })
             }
+            aria-label="Mark done"
+            className="hover:text-coolant! hover:bg-coolant/5!"
           >
-            Mark Done
+            <Check size={15} />
           </Button>
           <Button
             variant="danger"
+            size="icon"
             disabled={isPending}
             onClick={() =>
               startTransition(() => {
                 deleteReminder(reminder.id);
               })
             }
+            aria-label="Delete reminder"
           >
-            Delete
+            <Trash2 size={15} />
           </Button>
         </div>
       </div>
