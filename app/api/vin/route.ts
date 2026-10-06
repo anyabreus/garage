@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireUserId } from "@/lib/auth-helpers";
 import { decodeVin } from "@/lib/vin-decoder";
 
 export async function GET(request: NextRequest) {
+  const userId = await requireUserId();
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const vin = request.nextUrl.searchParams.get("vin");
 
   if (!vin || vin.length !== 17) {

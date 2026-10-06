@@ -22,7 +22,14 @@ export default function AddFuelLogForm() {
         <Input id="odometer" type="number" name="odometer" required />
       </FormField>
       <FormField label="Fuel Amount" htmlFor="fuelAmount">
-        <Input id="fuelAmount" type="number" step="0.01" min="0" required />
+        <Input
+          id="fuelAmount"
+          name="fuelAmount"
+          type="number"
+          step="0.01"
+          min="0"
+          required
+        />
       </FormField>
       <FormField label="Price Per Unit" htmlFor="pricePerUnit">
         <Input

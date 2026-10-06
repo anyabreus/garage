@@ -1,11 +1,25 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import { auth } from "./auth";
 
-export default function proxy(request: NextRequest) {
-  if (request.nextUrl.pathname === "/") {
-    return NextResponse.redirect(new URL("/vehicles", request.url));
+export default auth((req) => {
+  const isLoggedIn = !!req.auth;
+  const isOnLoginPage = req.nextUrl.pathname === "/login";
+
+  if (req.nextUrl.pathname === "/") {
+    return NextResponse.redirect(
+      new URL(isLoggedIn ? "/vehicles" : "/login", req.url),
+    );
   }
-}
+
+  if (isLoggedIn && isOnLoginPage) {
+    return NextResponse.redirect(new URL("/vehicles", req.url));
+  }
+
+  if (!isLoggedIn && !isOnLoginPage) {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+});
 
 export const config = {
-  matcher: ["/"],
+  matcher: ["/", "/login", "/vehicles/:path*", "/reminders/:path*"],
 };

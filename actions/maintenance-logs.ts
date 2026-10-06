@@ -9,6 +9,7 @@ import { maintenanceLogsTable, vehiclesTable } from "@/db/schema";
 import { updateVehicle } from "./vehicles";
 import { ActionResult } from "@/types/action-result";
 import { MAINTENANCE_TYPES, MaintenanceType } from "@/types/maintenance-logs";
+import { ownsVehicle, requireUserId } from "@/lib/auth-helpers";
 
 export const addMaintenanceLog = async (
   maintenanceLogData: typeof maintenanceLogsTable.$inferInsert,
@@ -41,6 +42,12 @@ export const addMaintenanceLogFromForm = async (
   _prevState: ActionResult<typeof maintenanceLogsTable.$inferSelect> | null,
   formData: FormData,
 ): Promise<ActionResult<typeof maintenanceLogsTable.$inferSelect>> => {
+  const userId = await requireUserId();
+  if (!userId) return { success: false, error: "Not authenticated." };
+
+  const allowed = await ownsVehicle(vehicleId, userId);
+  if (!allowed) return { success: false, error: "Vehicle not found." };
+
   const rawType = formData.get("type") as string;
   const type = MAINTENANCE_TYPES.includes(rawType as MaintenanceType)
     ? (rawType as MaintenanceType)
@@ -68,15 +75,25 @@ export const addMaintenanceLogFromForm = async (
 export const deleteMaintenanceLog = async (
   maintenanceLogId: (typeof maintenanceLogsTable.$inferSelect)["id"],
 ): Promise<ActionResult> => {
-  try {
-    const [deleted] = await db
-      .delete(maintenanceLogsTable)
-      .where(eq(maintenanceLogsTable.id, maintenanceLogId))
-      .returning();
+  const userId = await requireUserId();
+  if (!userId) return { success: false, error: "Not authenticated." };
 
-    if (!deleted)
+  try {
+    const [log] = await db
+      .select()
+      .from(maintenanceLogsTable)
+      .where(eq(maintenanceLogsTable.id, maintenanceLogId));
+    if (!log) return { success: false, error: "Maintenance log not found." };
+
+    const allowed = await ownsVehicle(log.vehicleId, userId);
+    if (!allowed)
       return { success: false, error: "Maintenance log not found." };
-    revalidatePath(`/vehicles/${deleted.vehicleId}`);
+
+    await db
+      .delete(maintenanceLogsTable)
+      .where(eq(maintenanceLogsTable.id, maintenanceLogId));
+
+    revalidatePath(`/vehicles/${log.vehicleId}`);
     return { success: true, data: undefined };
   } catch {
     return { success: false, error: "Could not delete maintenance log." };

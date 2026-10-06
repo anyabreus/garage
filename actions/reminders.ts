@@ -6,6 +6,7 @@ import db from "@/db";
 import { remindersTable } from "@/db/schema";
 import { getVehicle } from "@/db/queries/vehicles";
 import type { ActionResult } from "@/types/action-result";
+import { ownsVehicle, requireUserId } from "@/lib/auth-helpers";
 
 export const createReminder = async (
   reminderData: Omit<
@@ -33,6 +34,12 @@ export const createReminderFromForm = async (
   _prevState: ActionResult<typeof remindersTable.$inferSelect> | null,
   formData: FormData,
 ): Promise<ActionResult<typeof remindersTable.$inferSelect>> => {
+  const userId = await requireUserId();
+  if (!userId) return { success: false, error: "Not authenticated." };
+
+  const allowed = await ownsVehicle(vehicleId, userId);
+  if (!allowed) return { success: false, error: "Vehicle not found." };
+
   const reminderData = {
     vehicleId,
     label: formData.get("label") as string,
@@ -54,13 +61,18 @@ export const createReminderFromForm = async (
 export const dismissReminder = async (
   reminderId: (typeof remindersTable.$inferSelect)["id"],
 ): Promise<ActionResult> => {
+  const userId = await requireUserId();
+  if (!userId) return { success: false, error: "Not authenticated." };
+
   try {
     const [reminder] = await db
       .select()
       .from(remindersTable)
       .where(eq(remindersTable.id, reminderId));
-
     if (!reminder) return { success: false, error: "Reminder not found." };
+
+    const allowed = await ownsVehicle(reminder.vehicleId, userId);
+    if (!allowed) return { success: false, error: "Reminder not found." };
 
     const vehicle = await getVehicle(reminder.vehicleId);
     if (!vehicle) return { success: false, error: "Vehicle not found." };
@@ -83,16 +95,23 @@ export const dismissReminder = async (
 export const deleteReminder = async (
   reminderId: (typeof remindersTable.$inferSelect)["id"],
 ): Promise<ActionResult> => {
-  try {
-    const [deleted] = await db
-      .delete(remindersTable)
-      .where(eq(remindersTable.id, reminderId))
-      .returning();
+  const userId = await requireUserId();
+  if (!userId) return { success: false, error: "Not authenticated." };
 
-    if (!deleted) return { success: false, error: "Reminder not found." };
+  try {
+    const [reminder] = await db
+      .select()
+      .from(remindersTable)
+      .where(eq(remindersTable.id, reminderId));
+    if (!reminder) return { success: false, error: "Reminder not found." };
+
+    const allowed = await ownsVehicle(reminder.vehicleId, userId);
+    if (!allowed) return { success: false, error: "Reminder not found." };
+
+    await db.delete(remindersTable).where(eq(remindersTable.id, reminderId));
 
     revalidatePath("/reminders");
-    revalidatePath(`/vehicles/${deleted.vehicleId}`);
+    revalidatePath(`/vehicles/${reminder.vehicleId}`);
     return { success: true, data: undefined };
   } catch {
     return { success: false, error: "Could not delete reminder." };

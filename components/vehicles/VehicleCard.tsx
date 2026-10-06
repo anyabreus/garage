@@ -39,7 +39,7 @@ export default function VehicleCard({
 
       <div className="flex justify-between text-xs">
         <span className="text-text-secondary">Odometer</span>
-        <span className="font-mono">
+        <span className="font-mono text-foreground">
           {vehicle.currentOdometer.toLocaleString()} km
         </span>
       </div>

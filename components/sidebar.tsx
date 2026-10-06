@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Car, Road, BellRing } from "lucide-react";
+import SignOutButton from "./auth/SignOutButton";
 
 const NAV_ITEMS = [
   { href: "/vehicles", label: "Vehicles", icon: Car },
@@ -35,6 +36,8 @@ export default function Sidebar() {
           </Link>
         );
       })}
+
+      <SignOutButton />
     </nav>
   );
 }

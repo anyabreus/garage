@@ -2,21 +2,26 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import db from "@/db";
 import { vehiclesTable } from "@/db/schema";
 import { ActionResult } from "@/types/action-result";
+import { requireUserId } from "@/lib/auth-helpers";
 
 export const createVehicle = async (
   _prevState: ActionResult<typeof vehiclesTable.$inferSelect> | null,
   formData: FormData,
 ): Promise<ActionResult<typeof vehiclesTable.$inferSelect>> => {
+  const userId = await requireUserId();
+  if (!userId) return { success: false, error: "Not authenticated." };
+
   const vehicleData = {
+    userId,
     make: formData.get("make") as string,
     model: formData.get("model") as string,
     year: Number(formData.get("year")),
-    initialOdometer: Number(formData.get("currentOdometer")),
-    currentOdometer: Number(formData.get("currentOdometer")),
+    initialOdometer: Number(formData.get("odometer")),
+    currentOdometer: Number(formData.get("odometer")),
     vin: (formData.get("vin") as string) || undefined,
     nickname: (formData.get("nickname") as string) || undefined,
   };
@@ -50,6 +55,9 @@ export const updateVehicle = async (
   vehicleId: number,
   vehicleData: Partial<typeof vehiclesTable.$inferInsert>,
 ) => {
+  const userId = await requireUserId();
+  if (!userId) throw new Error("Not authenticated.");
+
   const normalized = {
     ...vehicleData,
     vin: vehicleData.vin?.toUpperCase(),
@@ -58,7 +66,9 @@ export const updateVehicle = async (
   const [updatedVehicle] = await db
     .update(vehiclesTable)
     .set(normalized)
-    .where(eq(vehiclesTable.id, vehicleId))
+    .where(
+      and(eq(vehiclesTable.id, vehicleId), eq(vehiclesTable.userId, userId)),
+    )
     .returning();
 
   return updatedVehicle;
@@ -98,10 +108,15 @@ export const updateVehicleFromForm = async (
 export const deleteVehicle = async (
   vehicleId: (typeof vehiclesTable.$inferSelect)["id"],
 ): Promise<ActionResult> => {
+  const userId = await requireUserId();
+  if (!userId) return { success: false, error: "Not authenticated." };
+
   try {
     const [deletedVehicle] = await db
       .delete(vehiclesTable)
-      .where(eq(vehiclesTable.id, vehicleId))
+      .where(
+        and(eq(vehiclesTable.id, vehicleId), eq(vehiclesTable.userId, userId)),
+      )
       .returning();
 
     if (!deletedVehicle) {
