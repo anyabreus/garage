@@ -3,7 +3,9 @@ import { auth } from "./auth";
 
 export default auth((req) => {
   const isLoggedIn = !!req.auth;
-  const isOnLoginPage = req.nextUrl.pathname === "/login";
+  const isOnLoginPage =
+    req.nextUrl.pathname === "/login" ||
+    req.nextUrl.pathname === "/login/error";
 
   if (req.nextUrl.pathname === "/") {
     return NextResponse.redirect(
@@ -21,5 +23,11 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ["/", "/login", "/vehicles/:path*", "/reminders/:path*"],
+  matcher: [
+    "/",
+    "/login",
+    "/login/error",
+    "/vehicles/:path*",
+    "/reminders/:path*",
+  ],
 };
