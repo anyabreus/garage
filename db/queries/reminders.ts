@@ -1,11 +1,9 @@
 import { eq } from "drizzle-orm";
 import db from "@/db";
-import { remindersTable, vehiclesTable } from "@/db/schema";
+import { Reminder, remindersTable, Vehicle, vehiclesTable } from "@/db/schema";
 import { ownsVehicle, requireUserId } from "@/lib/auth-helpers";
 
-export const getReminders = async (
-  vehicleId: (typeof vehiclesTable.$inferSelect)["id"],
-) => {
+export const getReminders = async (vehicleId: Vehicle["id"]) => {
   const userId = await requireUserId();
   if (!userId) return [];
 
@@ -18,9 +16,7 @@ export const getReminders = async (
     .where(eq(remindersTable.vehicleId, vehicleId));
 };
 
-export const getReminder = async (
-  reminderId: (typeof remindersTable.$inferSelect)["id"],
-) => {
+export const getReminder = async (reminderId: Vehicle["id"]) => {
   const userId = await requireUserId();
   if (!userId) return undefined;
 
@@ -37,8 +33,8 @@ export const getReminder = async (
 };
 
 export type ReminderStatus = {
-  reminder: typeof remindersTable.$inferSelect;
-  vehicle: typeof vehiclesTable.$inferSelect;
+  reminder: Reminder;
+  vehicle: Vehicle;
   isDue: boolean;
   progress: number;
   remaining: number;

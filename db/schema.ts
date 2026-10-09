@@ -116,3 +116,15 @@ export const remindersTable = sqliteTable("reminders", {
   lastDoneAt: int({ mode: "timestamp" }).notNull(),
   lastDoneOdometer: int().notNull(),
 });
+
+export type Vehicle = typeof vehiclesTable.$inferSelect;
+export type NewVehicle = typeof vehiclesTable.$inferInsert;
+
+export type FuelLog = typeof fuelLogsTable.$inferSelect;
+export type NewFuelLog = typeof fuelLogsTable.$inferInsert;
+
+export type MaintenanceLog = typeof maintenanceLogsTable.$inferSelect;
+export type NewMaintenanceLog = typeof maintenanceLogsTable.$inferInsert;
+
+export type Reminder = typeof remindersTable.$inferSelect;
+export type NewReminder = typeof remindersTable.$inferInsert;

@@ -4,13 +4,13 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Trash2 } from "lucide-react";
 import { deleteVehicle } from "@/actions/vehicles";
-import { vehiclesTable } from "@/db/schema";
+import { Vehicle } from "@/db/schema";
 import Button from "../ui/Button";
 
 export default function DeleteVehicleButton({
   vehicleId,
 }: {
-  vehicleId: (typeof vehiclesTable.$inferSelect)["id"];
+  vehicleId: Vehicle["id"];
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();

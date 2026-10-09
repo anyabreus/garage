@@ -1,12 +1,12 @@
 import Link from "next/link";
-import type { vehiclesTable } from "@/db/schema";
+import { Vehicle } from "@/db/schema";
 import { cn } from "@/lib/utils";
 
 export default function VehicleCard({
   vehicle,
   dueCount,
 }: {
-  vehicle: typeof vehiclesTable.$inferSelect;
+  vehicle: Vehicle;
   dueCount: number;
 }) {
   const isDue = dueCount > 0;

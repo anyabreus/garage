@@ -4,15 +4,13 @@ import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import db from "@/db";
-import { fuelLogsTable, vehiclesTable } from "@/db/schema";
+import { FuelLog, fuelLogsTable, NewFuelLog, Vehicle } from "@/db/schema";
 import { getVehicle } from "@/db/queries/vehicles";
 import { updateVehicle } from "./vehicles";
 import { ActionResult } from "@/types/action-result";
 import { ownsVehicle, requireUserId } from "@/lib/auth-helpers";
 
-export const addFuelLog = async (
-  fuelLogData: typeof fuelLogsTable.$inferInsert,
-) => {
+export const addFuelLog = async (fuelLogData: NewFuelLog) => {
   const [newFuelLog] = await db
     .insert(fuelLogsTable)
     .values(fuelLogData)
@@ -34,10 +32,10 @@ export const addFuelLog = async (
 };
 
 export const addFuelLogFromForm = async (
-  vehicleId: (typeof vehiclesTable.$inferSelect)["id"],
-  _prevState: ActionResult<typeof fuelLogsTable.$inferSelect> | null,
+  vehicleId: Vehicle["id"],
+  _prevState: ActionResult<FuelLog> | null,
   formData: FormData,
-): Promise<ActionResult<typeof fuelLogsTable.$inferSelect>> => {
+): Promise<ActionResult<FuelLog>> => {
   const userId = await requireUserId();
   if (!userId) return { success: false, error: "Not authenticated." };
 
@@ -69,7 +67,7 @@ export const addFuelLogFromForm = async (
 };
 
 export const deleteFuelLog = async (
-  fuelLogId: (typeof fuelLogsTable.$inferSelect)["id"],
+  fuelLogId: FuelLog["id"],
 ): Promise<ActionResult> => {
   const userId = await requireUserId();
   if (!userId) return { success: false, error: "Not authenticated." };

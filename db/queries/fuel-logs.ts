@@ -1,11 +1,9 @@
 import { eq, desc } from "drizzle-orm";
 import db from "..";
-import { fuelLogsTable, vehiclesTable } from "../schema";
+import { fuelLogsTable, Vehicle } from "../schema";
 import { ownsVehicle, requireUserId } from "@/lib/auth-helpers";
 
-export const getFuelLogs = async (
-  vehicleId: (typeof vehiclesTable.$inferSelect)["id"],
-) => {
+export const getFuelLogs = async (vehicleId: Vehicle["id"]) => {
   const userId = await requireUserId();
   if (!userId) return [];
 

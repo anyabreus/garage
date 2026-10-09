@@ -4,14 +4,14 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { and, eq } from "drizzle-orm";
 import db from "@/db";
-import { vehiclesTable } from "@/db/schema";
+import { Vehicle, vehiclesTable } from "@/db/schema";
 import { ActionResult } from "@/types/action-result";
 import { requireUserId } from "@/lib/auth-helpers";
 
 export const createVehicle = async (
-  _prevState: ActionResult<typeof vehiclesTable.$inferSelect> | null,
+  _prevState: ActionResult<Vehicle> | null,
   formData: FormData,
-): Promise<ActionResult<typeof vehiclesTable.$inferSelect>> => {
+): Promise<ActionResult<Vehicle>> => {
   const userId = await requireUserId();
   if (!userId) return { success: false, error: "Not authenticated." };
 
@@ -26,7 +26,7 @@ export const createVehicle = async (
     nickname: (formData.get("nickname") as string) || undefined,
   };
 
-  let newVehicle: typeof vehiclesTable.$inferSelect;
+  let newVehicle: Vehicle;
 
   try {
     const normalized = {
@@ -53,7 +53,7 @@ export const createVehicle = async (
 
 export const updateVehicle = async (
   vehicleId: number,
-  vehicleData: Partial<typeof vehiclesTable.$inferInsert>,
+  vehicleData: Partial<Vehicle>,
 ) => {
   const userId = await requireUserId();
   if (!userId) throw new Error("Not authenticated.");
@@ -76,9 +76,9 @@ export const updateVehicle = async (
 
 export const updateVehicleFromForm = async (
   vehicleId: number,
-  _prevState: ActionResult<typeof vehiclesTable.$inferSelect> | null,
+  _prevState: ActionResult<Vehicle> | null,
   formData: FormData,
-): Promise<ActionResult<typeof vehiclesTable.$inferSelect>> => {
+): Promise<ActionResult<Vehicle>> => {
   const vehicleData = {
     make: formData.get("make") as string,
     model: formData.get("model") as string,
@@ -106,7 +106,7 @@ export const updateVehicleFromForm = async (
 };
 
 export const deleteVehicle = async (
-  vehicleId: (typeof vehiclesTable.$inferSelect)["id"],
+  vehicleId: Vehicle["id"],
 ): Promise<ActionResult> => {
   const userId = await requireUserId();
   if (!userId) return { success: false, error: "Not authenticated." };

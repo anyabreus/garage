@@ -3,16 +3,13 @@
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import db from "@/db";
-import { remindersTable } from "@/db/schema";
+import { NewReminder, Reminder, remindersTable } from "@/db/schema";
 import { getVehicle } from "@/db/queries/vehicles";
 import type { ActionResult } from "@/types/action-result";
 import { ownsVehicle, requireUserId } from "@/lib/auth-helpers";
 
 export const createReminder = async (
-  reminderData: Omit<
-    typeof remindersTable.$inferInsert,
-    "lastDoneAt" | "lastDoneOdometer"
-  >,
+  reminderData: Omit<NewReminder, "lastDoneAt" | "lastDoneOdometer">,
 ) => {
   const vehicle = await getVehicle(reminderData.vehicleId);
   if (!vehicle) throw new Error("Vehicle not found");
@@ -31,9 +28,9 @@ export const createReminder = async (
 
 export const createReminderFromForm = async (
   vehicleId: number,
-  _prevState: ActionResult<typeof remindersTable.$inferSelect> | null,
+  _prevState: ActionResult<Reminder> | null,
   formData: FormData,
-): Promise<ActionResult<typeof remindersTable.$inferSelect>> => {
+): Promise<ActionResult<Reminder>> => {
   const userId = await requireUserId();
   if (!userId) return { success: false, error: "Not authenticated." };
 
@@ -46,7 +43,7 @@ export const createReminderFromForm = async (
     intervalType: formData.get("intervalType") as "odometer" | "date",
     intervalValue: Number(formData.get("intervalValue")),
   };
-  let newReminder: typeof remindersTable.$inferSelect;
+  let newReminder: Reminder;
 
   try {
     newReminder = await createReminder(reminderData);
@@ -59,7 +56,7 @@ export const createReminderFromForm = async (
 };
 
 export const dismissReminder = async (
-  reminderId: (typeof remindersTable.$inferSelect)["id"],
+  reminderId: Reminder["id"],
 ): Promise<ActionResult> => {
   const userId = await requireUserId();
   if (!userId) return { success: false, error: "Not authenticated." };
@@ -93,7 +90,7 @@ export const dismissReminder = async (
 };
 
 export const deleteReminder = async (
-  reminderId: (typeof remindersTable.$inferSelect)["id"],
+  reminderId: Reminder["id"],
 ): Promise<ActionResult> => {
   const userId = await requireUserId();
   if (!userId) return { success: false, error: "Not authenticated." };

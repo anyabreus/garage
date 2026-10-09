@@ -1,10 +1,10 @@
 import { TimelineEntry } from "@/types/timeline";
 import { getFuelLogs } from "./fuel-logs";
 import { getMaintenanceLogs } from "./maintenance-logs";
-import { vehiclesTable } from "../schema";
+import { Vehicle } from "../schema";
 
 export const getVehicleTimeline = async (
-  vehicleId: (typeof vehiclesTable.$inferSelect)["id"],
+  vehicleId: Vehicle["id"],
 ): Promise<TimelineEntry[]> => {
   const [fuelLogs, maintenanceLogs] = await Promise.all([
     getFuelLogs(vehicleId),

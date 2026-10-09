@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { vehiclesTable } from "@/db/schema";
+import { Vehicle } from "@/db/schema";
 import { updateVehicleFromForm } from "@/actions/vehicles";
 import { useVinDecode } from "@/hooks/useVinDecode";
 import Input from "../ui/Input";
@@ -12,7 +12,7 @@ import SubmitButton from "../ui/SubmitButton";
 export default function EditVehicleForm({
   vehicleData,
 }: {
-  vehicleData: typeof vehiclesTable.$inferSelect;
+  vehicleData: Vehicle;
 }) {
   const updateVehicleWithId = updateVehicleFromForm.bind(null, vehicleData.id);
   const [state, formAction, isPending] = useActionState(

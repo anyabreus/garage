@@ -1,12 +1,4 @@
-import {
-  fuelLogsTable,
-  maintenanceLogsTable,
-  vehiclesTable,
-} from "@/db/schema";
-
-type FuelLog = typeof fuelLogsTable.$inferSelect;
-type MaintenanceLog = typeof maintenanceLogsTable.$inferSelect;
-type Vehicle = typeof vehiclesTable.$inferSelect;
+import { FuelLog, MaintenanceLog, Vehicle } from "@/db/schema";
 
 /**
  * Average fuel consumption in L/100km, computed only across full-tank-to-full-tank

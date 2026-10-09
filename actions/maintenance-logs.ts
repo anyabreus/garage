@@ -5,14 +5,19 @@ import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import db from "@/db";
 import { getVehicle } from "@/db/queries/vehicles";
-import { maintenanceLogsTable, vehiclesTable } from "@/db/schema";
+import {
+  MaintenanceLog,
+  NewMaintenanceLog,
+  Vehicle,
+  maintenanceLogsTable,
+} from "@/db/schema";
 import { updateVehicle } from "./vehicles";
 import { ActionResult } from "@/types/action-result";
 import { MAINTENANCE_TYPES, MaintenanceType } from "@/types/maintenance-logs";
 import { ownsVehicle, requireUserId } from "@/lib/auth-helpers";
 
 export const addMaintenanceLog = async (
-  maintenanceLogData: typeof maintenanceLogsTable.$inferInsert,
+  maintenanceLogData: NewMaintenanceLog,
 ) => {
   const [newMaintenanceLog] = await db
     .insert(maintenanceLogsTable)
@@ -38,10 +43,10 @@ export const addMaintenanceLog = async (
 };
 
 export const addMaintenanceLogFromForm = async (
-  vehicleId: (typeof vehiclesTable.$inferSelect)["id"],
-  _prevState: ActionResult<typeof maintenanceLogsTable.$inferSelect> | null,
+  vehicleId: Vehicle["id"],
+  _prevState: ActionResult<MaintenanceLog> | null,
   formData: FormData,
-): Promise<ActionResult<typeof maintenanceLogsTable.$inferSelect>> => {
+): Promise<ActionResult<MaintenanceLog>> => {
   const userId = await requireUserId();
   if (!userId) return { success: false, error: "Not authenticated." };
 
@@ -73,7 +78,7 @@ export const addMaintenanceLogFromForm = async (
 };
 
 export const deleteMaintenanceLog = async (
-  maintenanceLogId: (typeof maintenanceLogsTable.$inferSelect)["id"],
+  maintenanceLogId: MaintenanceLog["id"],
 ): Promise<ActionResult> => {
   const userId = await requireUserId();
   if (!userId) return { success: false, error: "Not authenticated." };
