@@ -140,7 +140,7 @@ export function spendByMonth(
   const monthly: Record<string, number> = {};
 
   const addToMonth = (date: Date, amount: number) => {
-    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+    const key = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
     monthly[key] = (monthly[key] ?? 0) + amount;
   };
 
